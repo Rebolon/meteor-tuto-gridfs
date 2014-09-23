@@ -3,8 +3,10 @@ Images = new FS.Collection("cfstest_images", {
     });
 
 if (Meteor.isClient) {
-  zone.helpers({
-    "imageCounter": Images.find().count()
+  Template.zone.helpers({
+    "imageCounter": function() {
+      return Images.find().count();
+    }
   });
 }
 
