@@ -8,10 +8,16 @@ if (Meteor.isClient) {
       return Images.find().count();
     }
   });
+  
+  Template.zone.events({
+    "click button": function() {
+      Meteor.call('dl');
+    }
+  })
 }
 
 if (Meteor.isServer) {
-  Meteor.startup(function () {
+  var dl = function() {
     console.log('start');
     Images.insert("https://mongolab.com//base/img/mongolab-logo-215x56.png", function (err, fileObj) {
       //Inserted new doc with ID fileObj._id, and kicked off the data upload using HTTP
@@ -22,6 +28,16 @@ if (Meteor.isServer) {
       
       console.log('success');
     });
-    console.log('end');
+    console.log('end');  
+  };
+  
+  Meteor.startup(function () {
+    dl();
   });
+  
+  Meteor.methods({
+    "dl": function() {
+      dl();
+    }
+  })
 }
