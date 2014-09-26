@@ -10,8 +10,22 @@ if (Meteor.isClient) {
   });
   
   Template.zone.events({
-    "click button": function() {
+    "click button.dl": function() {
       Meteor.call('dl');
+    },
+    "click button.url": function() {
+      Meteor.call('url', function(err, res) {
+        if (err) {
+          console.log('fail to get url');
+          return;
+        }
+        
+        console.log('url of image: ' + res);
+        
+        var img = document.createElement("img");
+        img.src = res;
+        $('body').append(img);
+      });
     }
   })
 }
@@ -46,9 +60,15 @@ if (Meteor.isServer) {
     },
     
     "url": function() {
-      var list = Images.findOne();
+      var list = Images.findOne(),
+          url = list.url({"brokenIsFine": true});
+      
       console.log(list);
-      console.log(list.url({"brokenIsFine": true}));
+      console.log(url);
+      console.log('isMounted: ', list.isMounted());
+      console.log('isImage: ', list.isImage());
+      
+      return url;
     }
   })
 }
