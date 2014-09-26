@@ -19,6 +19,7 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   var dl = function() {
     console.log('start');
+    Images.find().forEach(function(item){Images.remove({_id: item._id});});
     Images.insert("https://mongolab.com//base/img/mongolab-logo-215x56.png", function (err, fileObj) {
       //Inserted new doc with ID fileObj._id, and kicked off the data upload using HTTP
       if (err) {
@@ -33,11 +34,21 @@ if (Meteor.isServer) {
   
   Meteor.startup(function () {
     dl();
+    
+    FS.HTTP.mount([
+      '/cfs/files/cfstest_images'
+      ]);
   });
   
   Meteor.methods({
     "dl": function() {
       dl();
+    },
+    
+    "url": function() {
+      var list = Images.findOne();
+      console.log(list);
+      console.log(list.url({"brokenIsFine": true}));
     }
   })
 }
